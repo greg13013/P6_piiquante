@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 
 const app = express();
 
-const Sauce = require('./models/sauces')
-const Utilisateur = require('./models/utilisateurs')
+// const Sauce = require('./models/sauces')
+// const Utilisateur = require('./models/utilisateurs')
 
 app.use(express.json());
 
@@ -23,8 +23,8 @@ app.use((req, res, next) => {
     next();
   });
 
-const sauceRoutes = require('./routes/sauces');
-const utilisateurRoutes = require('./routes/utilisateurs');
+const sauceRoutes = require('./routes/saucesRoutes');
+const utilisateurRoutes = require('./routes/utilisateursRoutes');
 
 app.use('/api/sauces', sauceRoutes);
 app.use('/api/utilisateurs', utilisateurRoutes);
