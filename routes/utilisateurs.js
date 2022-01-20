@@ -4,7 +4,7 @@ const router = express.Router();
 
 const utilisateursCtrl = require('../controllers/utilisateurs');
 
-router.get('/', utilisateursCtrl.getAllUtilisateurs);
+// router.get('/', utilisateursCtrl.getAllUtilisateurs);
 
 
 module.exports = router;

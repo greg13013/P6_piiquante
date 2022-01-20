@@ -8,6 +8,7 @@ const Utilisateur = require('./models/utilisateurs')
 
 app.use(express.json());
 
+//   srv://<user:mdp>
 mongoose.connect('mongodb+srv://piiquante:mdppiiquante@cluster0.0o5ap.mongodb.net/Cluster0?retryWrites=true&w=majority',
   { useNewUrlParser: true,
     useUnifiedTopology: true })
