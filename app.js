@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 
 const app = express();
 
+const path = require('path');
+
 // const Sauce = require('./models/sauces')
 // const Utilisateur = require('./models/utilisateurs')
 
@@ -25,6 +27,8 @@ app.use((req, res, next) => {
 
 const sauceRoutes = require('./routes/saucesRoutes');
 const utilisateurRoutes = require('./routes/utilisateursRoutes');
+
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.use('/api/sauces', sauceRoutes);
 app.use('/api/auth', utilisateurRoutes);

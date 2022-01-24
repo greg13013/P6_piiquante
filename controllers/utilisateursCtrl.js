@@ -1,7 +1,9 @@
 const jwt = require('jsonwebtoken');
 const Utilisateur = require('../models/utilisateurs');
+const bcrypt = require ('bcrypt');
 
 exports.signup = (req, res, next) => {
+    // console.log(req.body);
     bcrypt.hash(req.body.password, 10)
       .then(hash => {
         const user = new Utilisateur({
@@ -26,13 +28,17 @@ exports.signup = (req, res, next) => {
             if (!valid) {
               return res.status(401).json({ error: 'Mot de passe incorrect !' });
             }
-            res.status(200).json({
-              userId: user._id,
-              token: jwt.sign(
+            
+            let token = jwt.sign(
                 { userId: user._id },
                 'RANDOM_TOKEN_SECRET',
                 { expiresIn: '24h' }
-              )
+              );
+
+
+            res.status(200).json({
+              userId: user._id,
+              token: token
             });
           })
           .catch(error => res.status(500).json({ error }));
