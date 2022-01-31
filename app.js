@@ -1,16 +1,41 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
+//OWASP
+const toobusy = require ('toobusy-js');
+const rateLimit = require('express-rate-limit');
+const hpp = require('hpp');
+
 const app = express();
 
 const path = require('path');
 
-// const Sauce = require('./models/sauces')
-// const Utilisateur = require('./models/utilisateurs')
+// middleware qui bloque les requetes quand surchargé
+app.use(function(req, res, next) {
+  if (toobusy()) {
+    res.send(503, "I'm busy right now, sorry.");
+  } else {
+    next();
+  }
+});
+
+//Limite le flood du même utilisateur (IP)
+const limiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+})
+
+// Apply the rate limiting middleware to all requests
+app.use(limiter)
+
+//Vérifie les parametres de la requete
+app.use(hpp());
 
 app.use(express.json());
 
-//   srv://<user:mdp>
+//Connexion mongoDB  =>   srv://<user:mdp>
 mongoose.connect('mongodb+srv://piiquante:mdppiiquante@cluster0.0o5ap.mongodb.net/Cluster0?retryWrites=true&w=majority',
   { useNewUrlParser: true,
     useUnifiedTopology: true })
