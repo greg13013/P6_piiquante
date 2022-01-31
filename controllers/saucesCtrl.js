@@ -85,7 +85,7 @@ exports.modifySauce = async (req, res, next) => {
             }
         });
 
-        // Si oui modif possible
+    // Si oui modif possible
     if (sauceOwner) {
 
         await Sauce.updateOne({ _id: req.params.id }, sauce).then(
@@ -131,3 +131,86 @@ exports.getAllSauces = (req, res, next) => {
         }
     );
 };
+
+exports.likeSauces = async (req, res, next) => {
+
+    console.log('---------------------------------------------')
+    const idSauce = req.params.id;
+    const etatLike = req.body.like;
+    const userId = req.body.userId;
+
+    let tabUsersLiked;
+    let tabUsersDisliked;
+    let totalLikes;
+    let totalDislikes;
+
+    //Récupération sauce et stockage like/dislike
+    await Sauce.findOne({ _id: req.params.id }).then(
+        (sauce) => {
+            tabUsersLiked = sauce.usersLiked
+            tabUsersDisliked = sauce.usersDisliked
+            totalLikes = sauce.likes
+            totalDislikes = sauce.dislikes
+        });
+
+
+
+        //Si like 
+    if (etatLike === 1) {
+
+        totalLikes++;
+        tabUsersLiked.push(userId);
+
+
+    }
+    //Si user annule like ou dislike
+    else if (etatLike === 0) {
+
+        //Récupération de la position dans le tableau userID
+        let posUserIdTabUsersLiked = tabUsersLiked.indexOf(userId)
+        let posUserIdTabUsersDisliked = tabUsersDisliked.indexOf(userId)
+
+        console.log(posUserIdTabUsersLiked)
+        console.log(posUserIdTabUsersDisliked)
+
+        //Suppression selon likes ou dislikess
+        if (posUserIdTabUsersLiked !== -1) {
+            tabUsersLiked.splice(posUserIdTabUsersLiked, 1);
+            totalLikes--
+        }
+
+        if (posUserIdTabUsersDisliked !== -1) {
+            tabUsersDisliked.splice(posUserIdTabUsersDisliked, 1);
+            totalDislikes--
+        }
+
+    }
+
+
+    //Si dislike
+    else if (etatLike === -1) {
+        totalDislikes++;
+        tabUsersDisliked.push(userId);
+    }
+
+    console.log('tableau like ', tabUsersLiked);
+    console.log('tableau dislike ', tabUsersDisliked);
+    console.log('Like ', totalLikes);
+    console.log('Dislike ', totalDislikes);
+
+    //Met a jour la sauce avec les likes, dislikes et les tableaux likes/dislikes userID
+    Sauce.updateOne({ _id: idSauce }, { likes: totalLikes, dislikes: totalDislikes, usersLiked: tabUsersLiked, usersDisliked: tabUsersDisliked }).then(
+        (sauce) => {
+            // console.log(sauce);
+            res.status(201).json({
+                message: 'Sauce update successfully!'
+            });
+        }
+    ).catch(
+        (error) => {
+            res.status(400).json({
+                error: error
+            });
+        }
+    );
+}
