@@ -49,7 +49,7 @@ exports.getOneSauce = (req, res, next) => {
     );
 };
 
-function deleteFichier(id) {
+async function deleteFichier(id) {
     Sauce.findOne({ _id: id })
         .then(sauce => {
             const filename = sauce.imageUrl.split('/images/')[1];
@@ -60,7 +60,7 @@ function deleteFichier(id) {
 
 //Modifie la sauce
 exports.modifySauce = async (req, res, next) => {
-    req.file ? deleteFichier(req.params.id) : null;
+    req.file ? await deleteFichier(req.params.id) : null;
 
     var sauceOwner = false
 
