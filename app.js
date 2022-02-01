@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
-//OWASP
+//Sécurités
 const toobusy = require ('toobusy-js');
 const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
@@ -27,7 +27,7 @@ const limiter = rateLimit({
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 })
 
-// Apply the rate limiting middleware to all requests
+// Applique une limitation pour les requêtes
 app.use(limiter)
 
 //Vérifie les parametres de la requete

@@ -5,6 +5,7 @@ const router = express.Router();
 
 const saucesCtrl = require('../controllers/saucesCtrl');
 
+//middleware pour authentification et image
 const auth = require('../middleware/auth');
 const multer = require('../middleware/multer-config');
 

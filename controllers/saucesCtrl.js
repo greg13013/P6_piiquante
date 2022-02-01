@@ -1,6 +1,7 @@
 const Sauce = require('../models/sauces');
 const fs = require('fs');
 
+//Créer une sauce, stocke l'image dans le dossier images
 exports.createSauce = (req, res, next) => {
     const sauceBody = JSON.parse(req.body.sauce);
     const sauce = new Sauce({
@@ -31,6 +32,7 @@ exports.createSauce = (req, res, next) => {
     );
 };
 
+//Retourne une sauce grâce à son id
 exports.getOneSauce = (req, res, next) => {
     Sauce.findOne({
         _id: req.params.id
@@ -55,6 +57,8 @@ function deleteFichier(id) {
         })
 }
 
+
+//Modifie la sauce
 exports.modifySauce = async (req, res, next) => {
     req.file ? deleteFichier(req.params.id) : null;
 
@@ -104,6 +108,7 @@ exports.modifySauce = async (req, res, next) => {
     }
 };
 
+//Supprime une sauce grâce à son id ainsi que son image dans le dossier images
 exports.deleteSauce = (req, res, next) => {
     Sauce.findOne({ _id: req.params.id })
         .then(sauce => {
@@ -117,6 +122,7 @@ exports.deleteSauce = (req, res, next) => {
         .catch(error => res.status(500).json({ error }));
 };
 
+//Retourne toutes les sauces
 exports.getAllSauces = (req, res, next) => {
     // res.status(200).json({message: 'tsst'})
     Sauce.find().then(

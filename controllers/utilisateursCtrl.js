@@ -2,8 +2,9 @@ const jwt = require('jsonwebtoken');
 const Utilisateur = require('../models/utilisateurs');
 const bcrypt = require ('bcrypt');
 
+//Créer un compte utilisateur
 exports.signup = (req, res, next) => {
-    // console.log(req.body);
+    //Utilisation de bcrypt pour le hash du mot de passe
     bcrypt.hash(req.body.password, 10)
       .then(hash => {
         const user = new Utilisateur({
@@ -17,18 +18,21 @@ exports.signup = (req, res, next) => {
       .catch(error => res.status(500).json({ error }));
   };
 
+  //Login de l'utilisateur
   exports.login = (req, res, next) => {
     Utilisateur.findOne({ email: req.body.email })
       .then(user => {
         if (!user) {
           return res.status(401).json({ error: 'Utilisateur non trouvé !' });
         }
+        //Compare le mot de passe de la base de donnée à celui envoyer par l'utilisateur
         bcrypt.compare(req.body.password, user.password)
           .then(valid => {
             if (!valid) {
               return res.status(401).json({ error: 'Mot de passe incorrect !' });
             }
             
+            //Création du token d'authentification avec un délai d'expirations
             let token = jwt.sign(
                 { userId: user._id },
                 'RANDOM_TOKEN_SECRET',
