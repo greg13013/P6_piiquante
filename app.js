@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const toobusy = require ('toobusy-js');
 const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
+const hsts = require('hsts');
 
 const app = express();
 
@@ -32,6 +33,11 @@ app.use(limiter)
 
 //Vérifie les parametres de la requete
 app.use(hpp());
+
+//Assure l'utilisation de https
+app.use(hsts({
+  maxAge: 15552000  // 180 days in seconds
+}))
 
 app.use(express.json());
 
